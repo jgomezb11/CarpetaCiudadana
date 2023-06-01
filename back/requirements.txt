@@ -1,0 +1,14 @@
+flask==2.3.2
+python-dotenv==1.0.0
+pymongo==4.3.3
+boto3==1.26.142
+flask-jwt-extended==4.5.2
+flask_sqlalchemy==3.0.3
+flask_marshmallow==0.15.0
+requests==2.31.0
+flask_cors==3.0.10
+marshmallow-sqlalchemy==0.29.0
+mysqlclient==2.1.1
+pymysql===1.0.3
+pycryptodomex==3.18.0
+yagmail==0.15.293
