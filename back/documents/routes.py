@@ -13,15 +13,8 @@ document_blueprint = Blueprint('documents', __name__, url_prefix='/doc')
 @document_blueprint.route('/createDoc', methods=['POST'])
 def create_documento():
     from app import Documento, Usuario, documento_schema, db
-    print(request.form)
-    if 'file' not in request.files:
-        return jsonify({"msg": "No file part in the request"}), 400
     file = request.files['file']
     data = request.form
-    if file.filename == '':
-        return jsonify({"msg": "No file selected"}), 400
-    if not file or not file.filename.lower().endswith('.pdf'):
-        return jsonify({"msg": "Not a PDF file"}), 400
     usuario = Usuario.query.filter_by(email=data.get('email', "")).first()
     if usuario is None:
         return jsonify({"msg": "User not found"}), 404

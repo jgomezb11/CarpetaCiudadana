@@ -57,14 +57,12 @@ def create_user():
     return usuario_schema.jsonify(new_usuario), 201
 
 @user_blueprint.route('/getUsers', methods=['GET'])
-@jwt_required()
 def get_usuarios():
     all_usuarios = Usuario.query.all()
     result = usuarios_schema.dump(all_usuarios)
     return jsonify(result)
 
 @user_blueprint.route('/getUser', methods=['GET'])
-@jwt_required()
 def get_usuario():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -78,7 +76,6 @@ def get_usuario():
     return usuario_schema.jsonify(usuario)
 
 @user_blueprint.route('/updateUser', methods=['PUT'])
-@jwt_required()
 def update_usuario():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -105,7 +102,6 @@ def update_usuario():
     return jsonify({'msg': 'There was a problem with the update. Check that the user exists'})
 
 @user_blueprint.route('/delUser', methods=['DELETE'])
-@jwt_required()
 def delete_usuario():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
