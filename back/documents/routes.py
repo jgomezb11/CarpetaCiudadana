@@ -18,7 +18,7 @@ def create_documento():
     if usuario is None:
         return jsonify({"msg": "User not found"}), 404
     name = file.filename.lower()
-    is_signed = bool(data.get('is_signed', None))
+    is_signed = bool(data.get('is_signed', False))
     owner = data.get("email", None)
     sender = data.get('sender', None)
     if not name or not owner or not sender:
@@ -49,7 +49,7 @@ def get_s3_link():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     from app import Documento
-    documento = Documento.query.get(data.name)
+    documento = Documento.query.get(data.get('name'))
     if documento is None:
         return jsonify({"msg": "Document not found"}), 404
     return jsonify({"s3_link": documento.s3_link})
@@ -60,9 +60,11 @@ def delete_documento():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     from app import Documento, db, documento_schema
-    documento = Documento.query.get(data.name)
+    documento = Documento.query.get(data.get("name"))
     if documento is None:
         return jsonify({"msg": "Document not found"}), 404
+    
+    s3_handler.delete_file(documento.s3_link)
     db.session.delete(documento)
     db.session.commit()
     return documento_schema.jsonify(documento)

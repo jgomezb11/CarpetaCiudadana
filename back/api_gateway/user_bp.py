@@ -18,7 +18,7 @@ def login():
     headers = {'Content-Type': 'application/json'}
     response = requests.post(f"{user_api}/user/login", json=data, headers=headers)
     if response.status_code == 200:
-        access_token = create_access_token(identity=response['email'], expires_delta=timedelta(hours=24))
+        access_token = create_access_token(identity=response.json()['email'], expires_delta=timedelta(hours=24))
         return jsonify(access_token=access_token), response.status_code
     return jsonify(response.json()), response.status_code
 

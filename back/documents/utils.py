@@ -31,6 +31,12 @@ class s3:
         url = f'https://.s3.amazonaws.com/{bucket_name}/{nombre_archivo}'
         return url
 
+
+    def delete_file(self, nombre_archivo):
+        nombre = nombre_archivo.split('carpetaciudadana/')[1]
+        self.s3.delete_object(Bucket='carpetaciudadana', Key=nombre)
+
+
     def delete_folder(self, name_folder):
         bucket_name = 'carpetaciudadana'
         objects = self.s3.list_objects_v2(Bucket=bucket_name,
