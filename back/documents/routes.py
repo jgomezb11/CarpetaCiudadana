@@ -3,7 +3,6 @@ import os
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
 from utils import s3
 
 s3_handler = s3()
@@ -33,7 +32,6 @@ def create_documento():
     return documento_schema.jsonify(documento), 201
 
 @document_blueprint.route('/getAll', methods=['GET'])
-@jwt_required()
 def get_documentos():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -46,7 +44,6 @@ def get_documentos():
     return documentos_schema.jsonify(documentos)
 
 @document_blueprint.route('/getS3Link', methods=['GET'])
-@jwt_required()
 def get_s3_link():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -58,7 +55,6 @@ def get_s3_link():
     return jsonify({"s3_link": documento.s3_link})
 
 @document_blueprint.route('/delDocument', methods=['DELETE'])
-@jwt_required()
 def delete_documento():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400

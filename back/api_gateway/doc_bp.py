@@ -4,7 +4,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required, create_access_token
+from flask_jwt_extended import jwt_required
 import requests
 from settings import config
 
@@ -43,6 +43,7 @@ def create_documento():
     return jsonify(response.json()), response.status_code
 
 @document_blueprint.route('/getAll', methods=['GET'])
+@jwt_required()
 def get_documentos():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}
@@ -50,6 +51,7 @@ def get_documentos():
     return jsonify(response.json()), response.status_code
 
 @document_blueprint.route('/getS3Link', methods=['GET'])
+@jwt_required()
 def get_s3_link():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}
@@ -57,6 +59,7 @@ def get_s3_link():
     return jsonify(response.json()), response.status_code
 
 @document_blueprint.route('/delDocument', methods=['DELETE'])
+@jwt_required()
 def delete_documento():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}

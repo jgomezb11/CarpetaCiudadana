@@ -6,14 +6,12 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from flask_jwt_extended import JWTManager
 from datetime import datetime
 
 app = Flask(__name__)
 app.config.update(config)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-jwt = JWTManager(app)
 class Usuario(db.Model):
     __tablename__ = 'usuario'
     id = db.Column(db.String(50), primary_key=True)

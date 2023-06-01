@@ -6,7 +6,9 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, create_access_token
 import requests
 from settings import config
+from datetime import timedelta
 user_blueprint = Blueprint('users', __name__, url_prefix='/user')
+
 
 user_api = config["USERS_API"]
 
@@ -15,7 +17,11 @@ def login():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}
     response = requests.post(f"{user_api}/user/login", json=data, headers=headers)
+    if response.status_code == 200:
+        access_token = create_access_token(identity=response['email'], expires_delta=timedelta(hours=24))
+        return jsonify(access_token=access_token), response.status_code
     return jsonify(response.json()), response.status_code
+
 
 @user_blueprint.route('/registerUser', methods=['POST'])
 def create_user():
@@ -25,16 +31,19 @@ def create_user():
     return jsonify(response.json()), response.status_code
 
 @user_blueprint.route('/getUsers', methods=['GET'])
+@jwt_required()
 def get_usuarios():
     response = requests.get(f"{user_api}/user/getUsers")
     return jsonify(response.json()), response.status_code
 
 @user_blueprint.route('/getUser', methods=['GET'])
+@jwt_required()
 def get_usuario():
     response = requests.get(f"{user_api}/user/getUser")
     return jsonify(response.json()), response.status_code
 
 @user_blueprint.route('/updateUser', methods=['PUT'])
+@jwt_required()
 def update_usuario():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}
@@ -42,6 +51,7 @@ def update_usuario():
     return jsonify(response.json()), response.status_code
 
 @user_blueprint.route('/delUser', methods=['DELETE'])
+@jwt_required()
 def delete_usuario():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}

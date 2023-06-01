@@ -4,9 +4,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import jwt_required, create_access_token
 from app import db, Usuario, Carpeta, usuario_schema, usuarios_schema
-from datetime import timedelta
 from apis import DocumentosAPI, APIGovCarpeta
 
 api_gov = APIGovCarpeta()
@@ -26,8 +24,7 @@ def login():
     user = Usuario.query.filter_by(email=email).first()
     if user is None or not check_password_hash(user.password, password):
         return jsonify({"msg": "Bad email or password"}), 401
-    access_token = create_access_token(identity=email, expires_delta=timedelta(hours=24))
-    return jsonify(access_token=access_token), 200
+    return jsonify({"email": email}), 200
 
 @user_blueprint.route('/registerUser', methods=['POST'])
 def create_user():
