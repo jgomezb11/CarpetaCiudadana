@@ -5,7 +5,7 @@ import requests
 
 load_dotenv()
 
-class API:
+class APIGovCarpeta:
     def registerCitizen(self, id, name, address, email):
         url = "http://169.51.195.62:30174/apis/registerCitizen"
         data = {
@@ -24,4 +24,16 @@ class API:
         id_citizen = data.get('id')
         endpoint = f'http://169.51.195.62:30174/apis/validateCitizen/{id_citizen}'
         response = requests.get(endpoint)
+        return response.status_code
+
+class DocumentosAPI:
+    def initial_doc(self, email):
+        url = 'http://127.0.0.1:5001/doc/createDoc'
+        form = {
+            "email": email,
+            "is_signed": True,
+            "sender": "Registraduria"
+        }
+        archivo = {'file': open('C:\\Users\\Julian Gomez\\Documents\\universidad\\carpeta-ciudadana\\CarpetaCiudadana\\Resultado.pdf', 'rb')}
+        response = requests.post(url, files=archivo, data=form)
         return response.status_code

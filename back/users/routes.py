@@ -7,8 +7,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import jwt_required, create_access_token
 from app import db, Usuario, Carpeta, usuario_schema, usuarios_schema
 from datetime import timedelta
+from apis import DocumentosAPI, APIGovCarpeta
 
-
+api_gov = APIGovCarpeta()
+doc_api = DocumentosAPI()
 user_blueprint = Blueprint('users', __name__, url_prefix='/user')
 
 @user_blueprint.route('/login', methods=['POST'])
@@ -42,11 +44,16 @@ def create_user():
         return jsonify({"msg": "Missing parameters"}), 400
     if Usuario.query.filter_by(id=id).first() is not None:
         return jsonify({"msg": "User already exists"}), 400
+    if api_gov.validateCitizen({"id": id}) == 200:
+        return jsonify({"msg": "User already registered in another operator."}), 400
     new_usuario = Usuario(id=id, name=name, address=address, email=email, phone_number=phone_number, password=generate_password_hash(password))
     new_carpeta = Carpeta(id=id, number_of_documents=0, number_non_signed=0, user_id=id)
     new_usuario.carpeta = new_carpeta
+    #api_gov.registerCitizen(id, name, address, email)
     db.session.add(new_usuario)
     db.session.commit()
+    if doc_api.initial_doc(email) != 201:
+        return jsonify({"msg": "There was an error uploading the document"}), 400
     return usuario_schema.jsonify(new_usuario), 201
 
 @user_blueprint.route('/getUsers', methods=['GET'])

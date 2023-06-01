@@ -4,39 +4,35 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
+from utils import s3
 
+s3_handler = s3()
 
 document_blueprint = Blueprint('documents', __name__, url_prefix='/doc')
 
-@document_blueprint.route('/<user_id>/documentos', methods=['POST'])
-@jwt_required()
+@document_blueprint.route('/createDoc', methods=['POST'])
 def create_documento():
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-    data = request.get_json()
-    from app import Documento, Usuario, Carpeta, documento_schema, db
+    from app import Documento, Usuario, documento_schema, db
+    print(request.form)
     if 'file' not in request.files:
         return jsonify({"msg": "No file part in the request"}), 400
     file = request.files['file']
+    data = request.form
     if file.filename == '':
         return jsonify({"msg": "No file selected"}), 400
     if not file or not file.filename.lower().endswith('.pdf'):
         return jsonify({"msg": "Not a PDF file"}), 400
-    usuario = Usuario.query.get(data.email)
+    usuario = Usuario.query.filter_by(email=data.get('email', "")).first()
     if usuario is None:
         return jsonify({"msg": "User not found"}), 404
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-    data = request.get_json()
     name = file.filename.lower()
-    s3_link = data.get('s3_link', None)
-    is_signed = data.get('is_signed', None)
-    owner = data.email
+    is_signed = bool(data.get('is_signed', None))
+    owner = data.get("email", None)
     sender = data.get('sender', None)
-    # date_of_upload es generado automáticamente
-    if not name or not s3_link or not owner or not sender:
+    if not name or not owner or not sender:
         return jsonify({"msg": "Missing parameters"}), 400
-
+    s3_file_name = f"{usuario.email}/{name}"
+    s3_link = s3_handler.upload_file(file, s3_file_name)
     documento = Documento(name=name, s3_link=s3_link, is_signed=is_signed, owner=owner, sender=sender, carpeta_id=usuario.carpeta.id)
     db.session.add(documento)
     db.session.commit()
@@ -50,7 +46,7 @@ def get_documentos():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     from app import Usuario, documentos_schema
-    usuario = Usuario.query.get(data.id)
+    usuario = Usuario.query.get(data.get('id'))
     if usuario is None:
         return jsonify({"msg": "User not found"}), 404
     documentos = usuario.carpeta.documentos
