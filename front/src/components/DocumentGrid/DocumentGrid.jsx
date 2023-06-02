@@ -74,7 +74,7 @@ const DocumentGrid = () => {
         const timerId = setTimeout(() => {
             window.location.reload();
         }, 2000);
-        timerId();
+
 
     };
 
