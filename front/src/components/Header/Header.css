@@ -65,5 +65,39 @@
     color: #888;
   }
 
+  .modal-mail-content {
+    padding: 20px;
+    width: 80%;
+  }
+  
+  .document-select {
+    width: 100%;
+    height: 200px;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .send-button,
+  .close-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .send-button:hover,
+  .close-button:hover {
+    background-color: #555;
+  }
+  
+  .email-input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
   
   

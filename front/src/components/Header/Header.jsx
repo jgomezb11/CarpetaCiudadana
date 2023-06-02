@@ -2,12 +2,26 @@ import React, { useState } from 'react';
 import { FaUpload, FaUserFriends } from 'react-icons/fa';
 import { RiSendPlaneFill } from 'react-icons/ri';
 import './Header.css';
+import Modal from 'react-modal';
 
 function Header() {
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [documents, setDocuments] = useState([
+    { id: 1, title: 'Documento 1', description: 'Descripción del documento 1' },
+    { id: 2, title: 'Documento 2', description: 'Descripción del documento 2' },
+    { id: 3, title: 'Documento 3', description: 'Descripción del documento 3' },
+    { id: 4, title: 'Documento 4', description: 'Descripción del documento 4' },
+    { id: 5, title: 'Documento 5', description: 'Descripción del documento 5' }
+  ]);
+  const [selectedDocuments, setSelectedDocuments] = useState([]);
+  const [email, setEmail] = useState("");
+
+  // Llamada al api para llenar documentos
+
 
   const handleUploadClick = () => {
-    setShowUploadForm(true);
+    setShowUploadForm(!showUploadForm);
   };
 
   const handleCloseClick = () => {
@@ -18,6 +32,31 @@ function Header() {
     event.preventDefault();
     // Lógica para enviar el archivo al API
     setShowUploadForm(false);
+  };
+
+  const handleMailModal = () => {
+    setShowModal(!showModal);
+  }
+
+  const handleDocumentSelect = (event) => {
+    const selectedDocumentIds = Array.from(event.target.selectedOptions, (option) => option.value);
+    const selectedDocs = documents.filter((doc) => selectedDocumentIds.includes(doc.id.toString()));
+    setSelectedDocuments(selectedDocs);
+  };
+
+  const handleEmailchange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedDocuments([]);
+    setEmail("");
+  };
+
+  const handleSendEmail = () => {
+    //Ennviar el Mail por el API
+    handleModalClose();
   };
 
   return (
@@ -36,15 +75,15 @@ function Header() {
                     <input type="file" accept=".pdf" />
                     <button type="submit">Subir</button>
                     <button className="close-button" onClick={handleCloseClick}>
-                    Cerrar
-                  </button>
+                      Cerrar
+                    </button>
                   </form>
                 </div>
               </div>
             )}
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="#" className="nav-link" onClick={handleMailModal}>
               <RiSendPlaneFill className="nav-icon" />
               Enviar
             </a>
@@ -57,6 +96,33 @@ function Header() {
           </li>
         </ul>
       </nav>
+      <Modal
+        isOpen={showModal}
+        onRequestClose={handleModalClose}
+        contentLabel="Seleccionar documentos"
+        className="modal"
+        shouldCloseOnOverlayClick={true}
+      >
+        <div className="modal-mail-content">
+          <h3>Seleccionar documentos</h3>
+          <select className="document-select" multiple onChange={handleDocumentSelect}>
+            {documents.map((doc) => (
+              <option key={doc.id} value={doc.id}>
+                {doc.title}
+              </option>
+            ))}
+          </select>
+          <input type="email" value={email} onChange={handleEmailchange} className="email-input" placeholder="Correo electrónico" />
+          <button className="send-button" onClick={handleSendEmail}>
+            Enviar por correo
+          </button>
+          <button className="close-button" onClick={handleModalClose}>
+            Cerrar
+          </button>
+        </div>
+
+
+      </Modal>
     </header>
   );
 }
