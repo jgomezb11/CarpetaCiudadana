@@ -68,7 +68,17 @@ function Login() {
       },
       body: JSON.stringify(data)
     })
-      .then(response => response.json())
+      .then(response => {
+        const statusCode = response.status;
+        if(statusCode === 400){
+          alert("No dejes campos en blanco");
+        } else if (statusCode === 401){
+          alert("Email o contraseña incorrecta");
+        }else if(statusCode === 200){
+          //Redijire al HomePage
+        }
+        return response.json();
+      })
       .then(data => {
         localStorage.setItem('token', data.access_token);
       })
