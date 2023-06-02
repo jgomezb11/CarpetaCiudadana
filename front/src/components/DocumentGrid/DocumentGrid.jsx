@@ -53,8 +53,27 @@ const DocumentGrid = () => {
 
     };
 
-    const deleteDocument = (document) => {
-
+    const deleteDocument = (id) => {
+        const data = {
+            id
+        };
+        fetch('http://127.0.0.1:5002/doc/delete', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: localStorage.getItem('token')
+            },
+            body: JSON.stringify(data)
+          })
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+                setDocuments(data);
+            })
+            .catch(error => {
+              console.error(error);
+            });
     };
 
     return (
