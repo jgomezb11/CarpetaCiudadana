@@ -41,7 +41,7 @@ function Header() {
   };
   useEffect(() => {
     fetchDocuments();
-  }, []);
+  }, [ignored]);
 
 
   const handleUploadClick = () => {
