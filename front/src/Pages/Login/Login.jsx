@@ -8,7 +8,6 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showRegister, setShowRegister] = useState(true);
-  const [isRegistered, setIsRegistered] = useState(false);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -34,24 +33,33 @@ function Login() {
     event.preventDefault();
     const dada = {
       email,
-      password
+      password,
+      name,
+      address,
+      id: documentId
     };
-    fetch('API_URL', {
+    fetch('http://127.0.0.1:5002/user/registerUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     })
-      .then(response => response.json())
+      .then(response => {
+        return response.json();
+      })
       .then(data => {
-        setIsRegistered(true);
-        console.log(data);
-        alert("Registrado correctamente");
+        if (data.hasOwnProperty("msg")) {
+          alert('msg');
+        } else {
+          alert('Registro exitoso');
+          toggleShowRegister();
+        }
       })
       .catch(error => {
         console.error(error);
       });
+
     console.log(JSON.stringify(data));
   };
 
@@ -70,11 +78,11 @@ function Login() {
     })
       .then(response => {
         const statusCode = response.status;
-        if(statusCode === 400){
+        if (statusCode === 400) {
           alert("No dejes campos en blanco");
-        } else if (statusCode === 401){
+        } else if (statusCode === 401) {
           alert("Email o contraseña incorrecta");
-        }else if(statusCode === 200){
+        } else if (statusCode === 200) {
           //Redijire al HomePage
         }
         return response.json();
@@ -139,17 +147,9 @@ function Login() {
             </div>
             <button type="submit">Registrate</button>
           </form>
-          {!isRegistered && (
-            <p>
-              ¿Ya tienes una cuenta? <button onClick={toggleShowRegister}>Inicia sesión</button>
-            </p>
-          )}
-
-          {isRegistered && (
-            <p>
-              ¡Te registraste con exito! por favor <button onClick={toggleShowRegister}>Iniciar sesión</button> para continuar.
-            </p>
-          )}
+          <p>
+            ¿Ya tienes una cuenta? <button onClick={toggleShowRegister}>Inicia sesión</button>
+          </p>
         </div>
       )}
     </div>
