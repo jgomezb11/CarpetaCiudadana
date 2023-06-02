@@ -32,9 +32,27 @@ function Login() {
 
   const handleRegisterSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes enviar la información de registro a tu API
-    console.log('Register:', name, address, email, password);
-    setIsRegistered(true);
+    const dada = {
+      email,
+      password
+    };
+    fetch('API_URL', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        setIsRegistered(true);
+        console.log(data);
+        alert("Registrado correctamente");
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    console.log(JSON.stringify(data));
   };
 
   const handleLoginSubmit = async (event) => {
