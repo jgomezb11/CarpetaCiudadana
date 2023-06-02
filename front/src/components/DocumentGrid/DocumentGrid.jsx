@@ -67,12 +67,11 @@ const DocumentGrid = () => {
             })
             .then(data => {
                 setDocuments(data);
+                window.location.reload();
             })
             .catch(error => {
                 console.error(error);
             });
-
-        window.location.reload();
     };
 
     return (
