@@ -96,7 +96,10 @@ def get_documentos():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     from app import Usuario, documentos_schema
-    usuario = Usuario.query.get(data.get('id'))
+    email = data.get('email', None)
+    if not email:
+        return jsonify({"msg": "Missing email in request"}), 400
+    usuario = Usuario.query.filter_by(email=email).first()
     if usuario is None:
         return jsonify({"msg": "User not found"}), 404
     documentos = usuario.carpeta.documentos
@@ -108,7 +111,10 @@ def get_s3_link():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     from app import Documento
-    documento = Documento.query.filter_by(name=data.get('name')).first()
+    id = data.get('id', None)
+    if not id:
+        return jsonify({"msg": "Missing name in request"}), 400
+    documento = Documento.query.get(id)
     if documento is None:
         return jsonify({"msg": "Document not found"}), 404
     return jsonify({"s3_link": documento.s3_link})
@@ -119,7 +125,10 @@ def delete_documento():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     from app import Documento, db, documento_schema
-    documento = Documento.query.get(data.get("name"))
+    id = data.get('id', None)
+    if not id:
+        return jsonify({"msg": "Missing name in request"}), 400
+    documento = Documento.query.get(id)
     if documento is None:
         return jsonify({"msg": "Document not found"}), 401
     if documento.is_signed:
