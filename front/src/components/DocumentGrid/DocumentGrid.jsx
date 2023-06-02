@@ -57,8 +57,8 @@ const DocumentGrid = () => {
         fetch('http://127.0.0.1:5002/doc/delDocument', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             body: JSON.stringify(data)
         })
@@ -67,11 +67,15 @@ const DocumentGrid = () => {
             })
             .then(data => {
                 setDocuments(data);
-                window.location.reload();
             })
             .catch(error => {
                 console.error(error);
             });
+        const timerId = setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+        timerId();
+
     };
 
     return (
