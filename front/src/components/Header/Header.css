@@ -1,6 +1,5 @@
 .header {
     background-color: #333;
-    padding: 10px;
     position: fixed;
     top: 0;
     width: 100%;
@@ -9,7 +8,7 @@
 
 .navbar {
     display: flex;
-    transform: scale(1.1);
+    font-size: 25px;
 }
 
 .nav-menu {
@@ -18,7 +17,7 @@
 }
 
 .nav-item {
-    margin-left: 60px;
+    margin-right: 60px;
 }
 
 .nav-link:hover {
@@ -33,5 +32,5 @@
 }
 
 .nav-icon {
-    margin-right: 5px;
+    margin-right: 8px;
 }
