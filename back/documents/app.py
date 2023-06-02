@@ -21,7 +21,6 @@ class Usuario(db.Model):
     email = db.Column(db.String(100), nullable=True, unique=True)
     phone_number = db.Column(db.String(20), nullable=True)
     carpeta = db.relationship('Carpeta', backref='usuario', uselist=False)
-    notificaciones = db.relationship('Notificacion', backref='usuario', lazy=True)
     solicitudes = db.relationship('Solicitud', backref='usuario', lazy=True)
 
 
@@ -46,20 +45,13 @@ class Documento(db.Model):
     carpeta_id = db.Column(db.String(50), db.ForeignKey('carpeta.id'), nullable=False)
 
 
-class Notificacion(db.Model):
-    __tablename__ = 'notificacion'
-    id = db.Column(db.Integer, primary_key=True)
-    descripcion = db.Column(db.String(200), nullable=False)
-    destinatario = db.Column(db.String(100), nullable=False)
-    usuario_id = db.Column(db.String(50), db.ForeignKey('usuario.id'))
-
-
 class Solicitud(db.Model):
     __tablename__ = 'solicitud'
     id = db.Column(db.Integer, primary_key=True)
     nombres = db.Column(db.ARRAY(db.String(50)))
     remitente = db.Column(db.String(100), nullable=False)
     destinatario = db.Column(db.String(100), nullable=False)
+    estado = db.Column(db.Enum('PENDIENTE', 'APROBADA', 'RECHAZADA', name='estado_solicitud'), default='PENDIENTE')
     usuario_id = db.Column(db.String(50), db.ForeignKey('usuario.id'))
 
 
