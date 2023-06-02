@@ -39,11 +39,11 @@ function Login() {
 
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
-    const dada = {
+    const data = {
       email,
       password
     };
-    fetch('API_URL', {
+    fetch('http://127.0.0.1:5002/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -52,11 +52,9 @@ function Login() {
     })
       .then(response => response.json())
       .then(data => {
-        //Respuesta
-        console.log(data);
+        localStorage.setItem('token', data.access_token);
       })
       .catch(error => {
-        //Error
         console.error(error);
       });
 
