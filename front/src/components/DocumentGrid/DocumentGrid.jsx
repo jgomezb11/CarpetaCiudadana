@@ -53,11 +53,11 @@ const DocumentGrid = () => {
         const data = {
             id
         };
-        fetch('http://127.0.0.1:5002/doc/delete', {
+        fetch('http://127.0.0.1:5002/doc/delDocument', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                authorization: localStorage.getItem('token')
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             body: JSON.stringify(data)
         })
@@ -105,7 +105,7 @@ const DocumentGrid = () => {
                         <button className="modal-close-button" onClick={closeModal}>
                             <span className="close-icon">&times;</span>
                         </button>
-                        <button className="erase-button" onClick={deleteDocument(selectedDocument.id)}> <AiFillDelete />   Eliminar</button>
+                        <button className="erase-button" onClick={() => deleteDocument(selectedDocument.id)}> <AiFillDelete /> Eliminar</button>
                         <a target="_blank" className="download-button" href={selectedDocument.s3_link}> <AiOutlineDownload /> Descargar</a>
                     </div>
 

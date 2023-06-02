@@ -15,4 +15,7 @@ class API:
             "sujeto": sujeto,
             "adjuntos": adjuntos,
         }
-        requests.post(endpoint, json=data)
+        print(endpoint, data)
+        response = requests.post(endpoint, json=data)
+        print(response)
+

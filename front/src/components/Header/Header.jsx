@@ -51,35 +51,47 @@ function Header() {
     setShowUploadForm(false);
   };
 
+  const [file, setFile] = useState(null);
+
   const handleUploadSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
-    formData.append('email', email);
-    formData.append('sender', email);
+    const fileField = document.querySelector('input[type="file"]');
+    formData.append('file', fileField.files[0]);
+    formData.append('email', localStorage.getItem('email'));
+    formData.append('sender', localStorage.getItem('email'));
 
-    fetch('http://127.0.0.1:5002/doc/delete', {
+    for (let [key, value] of formData.entries()) { 
+      console.log(key, value);
+    }
+    fetch('http://127.0.0.1:5002/doc/createDoc', {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
-        authorization: localStorage.getItem('token')
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
       },
       body: formData
     })
-      .then(response => {
-      })
-      .then(data => {
-        if (data.hasOwnProperty("msg")) {
-          alert(data.msg);
-        } else {
-          alert("Archivo subido correctamente");
-          fetchDocuments();
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    .then(response => {
+      console.log(response);
+      return response.json();
+    })
+    .then(data => {
+      if (data.hasOwnProperty("msg")) {
+        alert(data.msg);
+      } else {
+        alert("Archivo subido correctamente");
+        fetchDocuments();
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
     setShowUploadForm(false);
+  };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]); 
   };
 
   const handleMailModal = () => {
@@ -91,7 +103,7 @@ function Header() {
     const selectedDocs = documents.filter((doc) => selectedDocumentIds.includes(doc.id.toString()));
     setSelectedDocuments(selectedDocs);
   };
-
+  
   const handleEmailchange = (event) => {
 
     setEmail(event.target.value);
@@ -104,16 +116,18 @@ function Header() {
   };
 
   const handleSendEmail = () => {
-    const links = selectedDocuments.map(objeto => objeto.s3_list);
+    const links = selectedDocuments.map(objeto => objeto.s3_link);
     const data = {
       sender: localStorage.getItem('email'),
       links,
       owner: email
     };
-    fetch('http://127.0.0.1:5002/doc/getAll', {
+    fetch('http://127.0.0.1:5002/doc/sendDocs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+
       },
       body: JSON.stringify(data)
     })
@@ -139,7 +153,8 @@ function Header() {
   };
 
   const handleLogOut = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token')
+    localStorage.removeItem('email');
     navigate('/');
   };
 
@@ -156,7 +171,7 @@ function Header() {
               <div className="upload-form-container">
                 <div className="upload-form">
                   <form onSubmit={handleUploadSubmit}>
-                    <input type="file" accept=".pdf" />
+                    <input type="file" name="file" accept=".pdf" onChange={handleFileChange} />
                     <button type="submit">Subir</button>
                     <button className="close-button" onClick={handleCloseUpload}>
                       Cerrar
@@ -206,7 +221,7 @@ function Header() {
           <select className="document-select" multiple onChange={handleDocumentSelect}>
             {documents.map((doc) => (
               <option key={doc.id} value={doc.id}>
-                {doc.title}
+                {doc.name}
               </option>
             ))}
           </select>

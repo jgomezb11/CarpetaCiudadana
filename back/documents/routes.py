@@ -14,6 +14,7 @@ def create_documento():
     from app import Documento, Usuario, Carpeta, documento_schema, db
     file = request.files['file']
     data = request.form
+    print(request.form)
     usuario = Usuario.query.filter_by(email=data.get('email', "")).first()
     if usuario is None:
         return jsonify({"msg": "User not found"}), 400
@@ -31,6 +32,7 @@ def create_documento():
         carpeta.number_non_signed = carpeta.number_non_signed + 1
     documento = Documento(name=name, s3_link=s3_link, is_signed=is_signed, owner=owner, sender=sender, carpeta_id=usuario.carpeta.id)
     db.session.add(documento)
+    db.session.add(carpeta)
     db.session.commit()
     return documento_schema.jsonify(documento), 201
 
@@ -79,6 +81,7 @@ def send_docs():
         return jsonify({"msg": "Missing required parameters"}), 400
     sujeto = f"Notificacion de recibo de archivos"
     mensaje = f"El usuario {sender} te acaba de mandar este paquete de archivos a traves del Operador123"
+    print("aa")
     apis.notificate_user(owner, sujeto, mensaje, links)
     return jsonify({"msg": "Notified successfully!"}), 201
 

@@ -40,7 +40,7 @@ def create_documento():
 
 @document_blueprint.route('/sendDocs', methods=['POST'])
 @jwt_required()
-def get_documentos():
+def send_documentos():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}
     response = requests.post(f"{documents_api}/doc/sendDocs", json=data, headers=headers)

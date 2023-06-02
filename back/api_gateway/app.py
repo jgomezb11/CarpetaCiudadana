@@ -14,7 +14,9 @@ def create_app():
         from user_bp import user_blueprint
         from doc_bp import document_blueprint
         from request_bp import solicitud_blueprint
+        from notifications_bp import notification_blueprint
         app.register_blueprint(user_blueprint)
         app.register_blueprint(document_blueprint)
         app.register_blueprint(solicitud_blueprint)
+        app.register_blueprint(notification_blueprint)
     return app
