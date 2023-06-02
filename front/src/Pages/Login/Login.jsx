@@ -32,7 +32,7 @@ function Login() {
 
   const handleRegisterSubmit = (event) => {
     event.preventDefault();
-    const dada = {
+    const data = {
       email,
       password
     };

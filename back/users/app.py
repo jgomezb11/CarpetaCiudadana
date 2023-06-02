@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.config.update(config)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
 class Usuario(db.Model):
     __tablename__ = 'usuario'
     id = db.Column(db.String(50), primary_key=True)
