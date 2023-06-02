@@ -11,6 +11,8 @@ def create_app():
     with app.app_context():
         from user_bp import user_blueprint
         from doc_bp import document_blueprint
+        from request_bp import solicitud_blueprint
         app.register_blueprint(user_blueprint)
         app.register_blueprint(document_blueprint)
+        app.register_blueprint(solicitud_blueprint)
     return app

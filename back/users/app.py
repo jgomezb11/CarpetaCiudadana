@@ -53,6 +53,7 @@ class Solicitud(db.Model):
 class UsuarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Usuario
+        include_relationships = True
         load_instance = True
 
 usuario_schema = UsuarioSchema()

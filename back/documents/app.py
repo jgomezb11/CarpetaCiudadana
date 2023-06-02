@@ -58,6 +58,7 @@ class Solicitud(db.Model):
 class DocumentoSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Documento
+        include_relationships = True
         load_instance = True
 
 documento_schema = DocumentoSchema()

@@ -60,7 +60,7 @@ solicitud_schema = SolicitudSchema(many=True)
 def create_app():
     global app
     with app.app_context():
-        from routes import user_blueprint
-        app.register_blueprint(user_blueprint)
+        from routes import solicitud_blueprint
+        app.register_blueprint(solicitud_blueprint)
         db.create_all()
     return app
