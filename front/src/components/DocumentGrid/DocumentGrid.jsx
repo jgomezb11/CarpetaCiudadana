@@ -39,7 +39,7 @@ const DocumentGrid = () => {
 
     useEffect(() => {
         fetchDocuments();
-    }, []);
+    }, [ignored]);
 
     const handleDocumentClick = (document) => {
         setSelectedDocument(document);
