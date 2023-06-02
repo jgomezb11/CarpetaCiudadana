@@ -1,8 +1,7 @@
 .login-form {
     width: 300px;
-    margin: 0 auto;
-    transform: scale(1.5);
-    margin-top: 10%;
+    margin: 7.5% auto;
+    transform: scale(1.4);
   }
   
   .login-container,
@@ -30,14 +29,15 @@
   
   input[type="text"],
   input[type="email"],
-  input[type="password"] {
+  input[type="password"],
+  input[type="number"] {
     width: 100%;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
   
-  login-form button {
+  .login-form button {
     width: 100%;
     padding: 8px 12px;
     background-color: #4CAF50;
@@ -47,7 +47,7 @@
     cursor: pointer;
   }
   
-  login-form button:hover {
+  .login-form button:hover {
     background-color: #45a049;
   }
   

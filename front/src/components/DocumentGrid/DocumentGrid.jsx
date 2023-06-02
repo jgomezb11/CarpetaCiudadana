@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import pdfLogo from './pdf-logo.png';
 import './DocumentGrid.css';
+import { AiFillDelete, AiOutlineDownload } from 'react-icons/ai';
+
+
 
 const DocumentGrid = ({ userId }) => {
     const [documents, setDocuments] = useState([
@@ -83,11 +86,11 @@ const DocumentGrid = ({ userId }) => {
                     <div className="modal-content">
                         <h3>{selectedDocument.title}</h3>
                         <p>{selectedDocument.description}</p>
-                        <button className="close-button" onClick={closeModal}>
+                        <button className="modal-close-button" onClick={closeModal}>
                             <span className="close-icon">&times;</span>
                         </button>
-                        <button className="erase-button" onClick={eraseDocument}>Eliminar</button>
-                        <button className="download-button" onClick={downloadDocument}>Descargar</button>
+                        <button className="erase-button" onClick={eraseDocument}> <AiFillDelete />   Eliminar</button>
+                        <button className="download-button" onClick={downloadDocument}> <AiOutlineDownload /> Descargar</button>
                     </div>
 
                 </Modal>

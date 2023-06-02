@@ -3,6 +3,7 @@ import './Login.css';
 
 function Login() {
   const [name, setName] = useState('');
+  const [documentId, setDocumentId] = useState(null);
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,6 +12,10 @@ function Login() {
 
   const handleNameChange = (event) => {
     setName(event.target.value);
+  };
+
+  const handledocumentIdChange = (event) => {
+    setDocumentId(event.target.value);
   };
 
   const handleAddressChange = (event) => {
@@ -69,6 +74,10 @@ function Login() {
             <div className="form-group">
               <label>Nombre:</label>
               <input type="text" value={name} onChange={handleNameChange} required />
+            </div>
+            <div className="form-group">
+              <label>Cédula:</label>
+              <input type="number" value={documentId} onChange={handledocumentIdChange} required />
             </div>
             <div className="form-group">
               <label>Dirección:</label>

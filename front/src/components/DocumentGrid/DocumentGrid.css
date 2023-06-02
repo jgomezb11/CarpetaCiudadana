@@ -73,7 +73,7 @@
   background-color: rgb(219, 25, 25);
 }
 
-.close-button {
+.modal-close-button {
   position: absolute;
   width: 80px;
   top: 0px;
