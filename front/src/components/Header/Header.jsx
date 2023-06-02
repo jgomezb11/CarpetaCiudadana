@@ -116,7 +116,7 @@ function Header() {
           <button className="send-button" onClick={handleSendEmail}>
             Enviar por correo
           </button>
-          <button className="close-button" onClick={handleModalClose}>
+          <button className="close-mail-button" onClick={handleModalClose}>
             Cerrar
           </button>
         </div>

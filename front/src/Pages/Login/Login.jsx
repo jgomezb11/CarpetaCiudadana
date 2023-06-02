@@ -89,6 +89,7 @@ function Login() {
       })
       .then(data => {
         localStorage.setItem('token', data.access_token);
+        localStorage.setItem('email', email);
       })
       .catch(error => {
         console.error(error);
@@ -99,10 +100,10 @@ function Login() {
 
   const toggleShowRegister = () => {
     setShowRegister(!showRegister);
-    setName(null);
+    setName("");
     setDocumentId(null);
     setAddress(null);
-    setEmail(null);
+    setEmail("");
     setPassword(null);
   };
 

@@ -7,38 +7,33 @@ import { AiFillDelete, AiOutlineDownload } from 'react-icons/ai';
 
 
 const DocumentGrid = ({ userId }) => {
-    const [documents, setDocuments] = useState([
-        { id: 1, title: 'Documento 1', description: 'Descripción del documento 1' },
-        { id: 2, title: 'Documento 2', description: 'Descripción del documento 2' },
-        { id: 3, title: 'Documento 3', description: 'Descripción del documento 3' },
-        { id: 4, title: 'Documento 4', description: 'Descripción del documento 4' },
-        { id: 5, title: 'Documento 5', description: 'Descripción del documento 5' }
-    ]);
+    const [documents, setDocuments] = useState([]);
     const [selectedDocument, setSelectedDocument] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
 
     const fetchDocuments = async () => {
-        try {
-            const response = await fetch('URL_DEL_API', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    // Datos del usuario para la petición POST
-                    // ...
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
+        const data = {
+            email: localStorage.getItem('email')
+          };
+          fetch('http://127.0.0.1:5002/doc/getAll', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: localStorage.getItem('token')
+            },
+            body: JSON.stringify(data)
+          })
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
                 setDocuments(data);
-            } else {
-                console.error('Error al obtener los documentos:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error al realizar la petición:', error);
-        }
+            })
+            .catch(error => {
+              console.error(error);
+            });
+      
+          console.log(JSON.stringify(data));
     };
 
     useEffect(() => {
@@ -58,7 +53,7 @@ const DocumentGrid = ({ userId }) => {
 
     };
 
-    const eraseDocument = (document) => {
+    const deleteDocument = (document) => {
 
     };
 
@@ -72,7 +67,7 @@ const DocumentGrid = ({ userId }) => {
                         onClick={() => handleDocumentClick(document)}
                     >
                         <img src={pdfLogo} alt="PDF" />
-                        <h4>{document.title}</h4>
+                        <h4>{document.name}</h4>
                     </div>
                 ))}
             </div>
@@ -84,13 +79,17 @@ const DocumentGrid = ({ userId }) => {
                     shouldCloseOnOverlayClick={true}
                 >
                     <div className="modal-content">
-                        <h3>{selectedDocument.title}</h3>
-                        <p>{selectedDocument.description}</p>
+                        <h3>{selectedDocument.id}. {selectedDocument.name}</h3>
+                        <p>El archivo se encuentra en la carpeta {selectedDocument.carpeta}</p> 
+                        <p>Fue subido el {selectedDocument.date_of_upload}</p>
+                        <p>El correo de su dueño es {selectedDocument.owner}</p>
+                        <p>El encargado de su validacion es {selectedDocument.sender}</p>
+                        {selectedDocument.is_signed ? (<p>El documento ya fue firmado</p>):(<p>El documento no ha sido firmado</p>)}
                         <button className="modal-close-button" onClick={closeModal}>
                             <span className="close-icon">&times;</span>
                         </button>
-                        <button className="erase-button" onClick={eraseDocument}> <AiFillDelete />   Eliminar</button>
-                        <button className="download-button" onClick={downloadDocument}> <AiOutlineDownload /> Descargar</button>
+                        <button className="erase-button" onClick={deleteDocument(selectedDocument.id)}> <AiFillDelete />   Eliminar</button>
+                        <a target="_blank" className="download-button" href={selectedDocument.s3_link}> <AiOutlineDownload /> Descargar</a>
                     </div>
 
                 </Modal>
