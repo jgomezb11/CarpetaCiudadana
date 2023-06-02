@@ -51,6 +51,14 @@ const DocumentGrid = ({ userId }) => {
         setModalOpen(false);
     };
 
+    const downloadDocument = (document) => {
+
+    };
+
+    const eraseDocument = (document) => {
+
+    };
+
     return (
         <div className="document-grid-container">
             <div className="document-grid">
@@ -66,12 +74,22 @@ const DocumentGrid = ({ userId }) => {
                 ))}
             </div>
             {selectedDocument && (
-                <Modal className="modal" isOpen={modalOpen} onClose={closeModal}>
+                <Modal
+                    className="modal"
+                    isOpen={modalOpen}
+                    onRequestClose={closeModal}
+                    shouldCloseOnOverlayClick={true}
+                >
                     <div className="modal-content">
                         <h3>{selectedDocument.title}</h3>
                         <p>{selectedDocument.description}</p>
-                        <button onClick={closeModal}>Cerrar</button>
+                        <button className="close-button" onClick={closeModal}>
+                            <span className="close-icon">&times;</span>
+                        </button>
+                        <button className="erase-button" onClick={eraseDocument}>Eliminar</button>
+                        <button className="download-button" onClick={downloadDocument}>Descargar</button>
                     </div>
+
                 </Modal>
             )}
         </div>

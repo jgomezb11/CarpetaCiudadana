@@ -37,7 +37,7 @@
     border-radius: 4px;
   }
   
-  button {
+  login-form button {
     width: 100%;
     padding: 8px 12px;
     background-color: #4CAF50;
@@ -47,7 +47,7 @@
     cursor: pointer;
   }
   
-  button:hover {
+  login-form button:hover {
     background-color: #45a049;
   }
   
