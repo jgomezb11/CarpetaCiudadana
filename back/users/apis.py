@@ -27,7 +27,7 @@ class APIGovCarpeta:
 
 class DocumentosAPI:
     def initial_doc(self, email):
-        url = 'http://127.0.0.1:5001/doc/createDoc'
+        url = 'http://54.159.156.218:5000/doc/createDoc'
         form = {
             "email": email,
             "is_signed": True,

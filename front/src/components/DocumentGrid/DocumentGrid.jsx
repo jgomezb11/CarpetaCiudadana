@@ -16,7 +16,7 @@ const DocumentGrid = () => {
         const data = {
             email: localStorage.getItem('email')
         };
-        fetch('http://127.0.0.1:5002/doc/getAll', {
+        fetch('http://3.220.28.150:5000/doc/getAll', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const DocumentGrid = () => {
         const data = {
             id
         };
-        fetch('http://127.0.0.1:5002/doc/delDocument', {
+        fetch('http://3.220.28.150:5000/doc/delDocument', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

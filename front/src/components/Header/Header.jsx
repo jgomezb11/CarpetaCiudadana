@@ -19,7 +19,7 @@ function Header() {
     const data = {
       email: localStorage.getItem('email')
     };
-    fetch('http://127.0.0.1:5002/doc/getAll', {
+    fetch('http://3.220.28.150:5000/doc/getAll', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ function Header() {
     for (let [key, value] of formData.entries()) { 
       console.log(key, value);
     }
-    fetch('http://127.0.0.1:5002/doc/createDoc', {
+    fetch('http://3.220.28.150:5000/doc/createDoc', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -123,7 +123,7 @@ function Header() {
       links,
       owner: email
     };
-    fetch('http://127.0.0.1:5002/doc/sendDocs', {
+    fetch('http://3.220.28.150:5000/doc/sendDocs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

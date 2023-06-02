@@ -40,7 +40,7 @@ function Login() {
       address,
       id: documentId
     };
-    fetch('http://127.0.0.1:5002/user/registerUser', {
+    fetch('http://3.220.28.150:5000/user/registerUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ function Login() {
       email,
       password
     };
-    fetch('http://127.0.0.1:5002/user/login', {
+    fetch('http://3.220.28.150:5000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
