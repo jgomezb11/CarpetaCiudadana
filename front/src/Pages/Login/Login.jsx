@@ -50,7 +50,7 @@ function Login() {
       })
       .then(data => {
         if (data.hasOwnProperty("msg")) {
-          alert('msg');
+          alert(data.msg);
         } else {
           alert('Registro exitoso');
           toggleShowRegister();
