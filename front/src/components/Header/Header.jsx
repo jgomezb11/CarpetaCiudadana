@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUpload, FaUserFriends } from 'react-icons/fa';
 import { RiSendPlaneFill } from 'react-icons/ri';
 import './Header.css';
@@ -10,15 +10,41 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
   const [documents, setDocuments] = useState([
     { id: 1, title: 'Documento 1', description: 'Descripción del documento 1' },
-    { id: 2, title: 'Documento 2', description: 'Descripción del documento 2' },
-    { id: 3, title: 'Documento 3', description: 'Descripción del documento 3' },
-    { id: 4, title: 'Documento 4', description: 'Descripción del documento 4' },
+    { id: 3, title: 'Documento 2', description: 'Descripción del documento 2' },
+    { id: 4, title: 'Documento 3', description: 'Descripción del documento 3' },
+    { id: 2, title: 'Documento 4', description: 'Descripción del documento 4' },
     { id: 5, title: 'Documento 5', description: 'Descripción del documento 5' }
   ]);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
   const [email, setEmail] = useState("");
 
-  // Llamada al api para llenar documentos
+  const fetchDocuments = async () => {
+    const data = {
+      email: localStorage.getItem('email')
+    };
+    fetch('http://127.0.0.1:5002/doc/getAll', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        setDocuments(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    console.log(JSON.stringify(data));
+  };
+  useEffect(() => {
+    fetchDocuments();
+  }, []);
 
 
   const handleUploadClick = () => {
@@ -31,7 +57,32 @@ function Header() {
 
   const handleUploadSubmit = (event) => {
     event.preventDefault();
-    // Lógica para enviar el archivo al API
+    const form = event.target;
+    const formData = new FormData(form);
+    formData.append('email', email);
+    formData.append('sender', email);
+
+    fetch('http://127.0.0.1:5002/doc/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        authorization: localStorage.getItem('token')
+      },
+      body: formData
+    })
+      .then(response => {
+      })
+      .then(data => {
+        if (data.hasOwnProperty("msg")) {
+          alert(data.msg);
+        } else {
+          alert("Archivo subido correctamente");
+          fetchDocuments();
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
     setShowUploadForm(false);
   };
 
@@ -46,6 +97,7 @@ function Header() {
   };
 
   const handleEmailchange = (event) => {
+
     setEmail(event.target.value);
   };
 
@@ -56,10 +108,36 @@ function Header() {
   };
 
   const handleSendEmail = () => {
-    //Ennviar el Mail por el API
+    const links = selectedDocuments.map(objeto => objeto.s3_list);
+    const data = {
+      sender: localStorage.getItem('email'),
+      links,
+      owner: email
+    };
+    fetch('http://127.0.0.1:5002/doc/getAll', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (response.status == 201){
+          alert("Envio exitoso");
+        } else {
+          alert("Envio fallido");
+        }
+        return response.json();
+      })
+      .then(data => {
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
     handleModalClose();
   };
-  
+
   const handlePeticiones = () => {
     setShowPeticiones(!showPeticiones);
   };
