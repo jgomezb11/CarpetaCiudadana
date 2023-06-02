@@ -9,13 +9,14 @@ def create_solicitud():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     remitente=data.get('remitente', '')
-    usuario = Usuario.query.filter_by(email=remitente).first()
+    destinatario=data.get('destinatario', '')
+    usuario = Usuario.query.filter_by(email=destinatario).first()
     if not usuario:
         return jsonify({"msg": "User doesn't exist in this operator"}), 400
     new_solicitud = Solicitud(
-        nombres=data.get('nombres', []),
+        nombres=data.get('nombres', ""),
         remitente=remitente,
-        destinatario=data.get('destinatario', ''),
+        destinatario=destinatario,
         estado="PENDIENTE",
         usuario_id=usuario.id
     )
@@ -44,8 +45,8 @@ def update_solicitud():
     if solicitud is None:
         return jsonify({"msg": "Solicitud not found"}), 400
     data = request.get_json()
-    if data.get('estado') not in {"PENDIENTE", "APROBADO", "RECHAZADO", None}:
-        return jsonify({"msg": "Unexpected state."}), 40
+    if data.get('estado') not in {"PENDIENTE", "APROBADA", "RECHAZADA", None}:
+        return jsonify({"msg": "Unexpected state."}), 400
     solicitud.estado = data.get('estado', solicitud.estado)
     db.session.commit()
     return solicitud_schema.jsonify(solicitud)

@@ -108,7 +108,7 @@ def get_s3_link():
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
     from app import Documento
-    documento = Documento.query.get(data.get('name'))
+    documento = Documento.query.filter_by(name=data.get('name')).first()
     if documento is None:
         return jsonify({"msg": "Document not found"}), 404
     return jsonify({"s3_link": documento.s3_link})

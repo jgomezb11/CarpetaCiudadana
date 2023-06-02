@@ -40,7 +40,9 @@ def get_usuarios():
 @user_blueprint.route('/getUser', methods=['GET'])
 @jwt_required()
 def get_usuario():
-    response = requests.get(f"{user_api}/user/getUser")
+    data = request.get_json()
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(f"{user_api}/user/getUser", json=data, headers=headers)
     return jsonify(response.json()), response.status_code
 
 @user_blueprint.route('/updateUser', methods=['PUT'])

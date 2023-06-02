@@ -1,8 +1,4 @@
-import sys
-import os
 from requests_toolbelt.multipart.encoder import MultipartEncoder
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 import requests

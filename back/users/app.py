@@ -44,7 +44,7 @@ class Documento(db.Model):
 class Solicitud(db.Model):
     __tablename__ = 'solicitud'
     id = db.Column(db.Integer, primary_key=True)
-    nombres = db.Column(db.ARRAY(db.String(50)))
+    nombres = db.Column(db.String(100), nullable=False)
     remitente = db.Column(db.String(100), nullable=False)
     destinatario = db.Column(db.String(100), nullable=False)
     estado = db.Column(db.Enum('PENDIENTE', 'APROBADA', 'RECHAZADA', name='estado_solicitud'), default='PENDIENTE')

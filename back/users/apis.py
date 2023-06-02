@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
 import requests
-# Funciones para comunicarse con el end-point del gobierno
 
 load_dotenv()
 
@@ -34,6 +33,6 @@ class DocumentosAPI:
             "is_signed": True,
             "sender": "Registraduria"
         }
-        archivo = {'file': open('C:\\Users\\Julian Gomez\\Documents\\universidad\\carpeta-ciudadana\\CarpetaCiudadana\\Resultado.pdf', 'rb')}
+        archivo = {'file': open("cedula_mock.pdf", 'rb')}
         response = requests.post(url, files=archivo, data=form)
         return response.status_code
