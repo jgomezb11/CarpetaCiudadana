@@ -14,4 +14,3 @@ pycryptodomex==3.18.0
 yagmail==0.15.293
 requests-toolbelt==1.0.0
 mysqlclient==2.1.1
-
