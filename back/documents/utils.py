@@ -28,7 +28,7 @@ class s3:
     def upload_file(self, archivo, nombre_archivo):
         bucket_name = 'carpetaciudadana'
         self.s3.upload_fileobj(archivo, bucket_name, nombre_archivo)
-        url = f'https://.s3.amazonaws.com/{bucket_name}/{nombre_archivo}'
+        url = f'https://s3.amazonaws.com/{bucket_name}/{nombre_archivo}'
         return url
 
 
