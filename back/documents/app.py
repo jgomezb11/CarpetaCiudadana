@@ -7,9 +7,11 @@ sys.path.append(parent_dir)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config.update(config)
+cors = CORS(app)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 class Usuario(db.Model):

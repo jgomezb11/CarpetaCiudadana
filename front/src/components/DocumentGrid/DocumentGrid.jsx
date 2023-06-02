@@ -16,10 +16,10 @@ const DocumentGrid = () => {
             email: localStorage.getItem('email')
           };
           fetch('http://127.0.0.1:5002/doc/getAll', {
-            method: 'GET',
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              authorization: localStorage.getItem('token')
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             body: JSON.stringify(data)
           })

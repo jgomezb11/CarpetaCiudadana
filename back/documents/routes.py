@@ -90,7 +90,7 @@ def send_docs():
     return jsonify(request_data), 200
 
 
-@document_blueprint.route('/getAll', methods=['GET'])
+@document_blueprint.route('/getAll', methods=['POST'])
 def get_documentos():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
