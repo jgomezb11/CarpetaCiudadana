@@ -48,11 +48,7 @@ const DocumentGrid = () => {
     const closeModal = () => {
         setModalOpen(false);
     };
-
-    const downloadDocument = (document) => {
-
-    };
-
+    
     const deleteDocument = (id) => {
         const data = {
             id
