@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { FaUpload, FaUserFriends } from 'react-icons/fa';
 import { RiSendPlaneFill } from 'react-icons/ri';
 import './Header.css';
@@ -13,6 +13,7 @@ function Header() {
   const [selectedDocuments, setSelectedDocuments] = useState([]);
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const fetchDocuments = async () => {
     const data = {
@@ -81,7 +82,7 @@ function Header() {
         alert(data.msg);
       } else {
         alert("Archivo subido correctamente");
-        fetchDocuments();
+        forceUpdate();
       }
     })
     .catch(error => {

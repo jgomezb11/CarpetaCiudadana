@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import Modal from 'react-modal';
 import pdfLogo from './pdf-logo.png';
 import './DocumentGrid.css';
@@ -10,6 +10,7 @@ const DocumentGrid = () => {
     const [documents, setDocuments] = useState([]);
     const [selectedDocument, setSelectedDocument] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
     const fetchDocuments = async () => {
         const data = {
@@ -71,7 +72,7 @@ const DocumentGrid = () => {
                 console.error(error);
             });
 
-        fetchDocuments();
+        forceUpdate();
     };
 
     return (
