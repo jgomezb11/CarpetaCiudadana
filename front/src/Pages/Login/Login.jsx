@@ -37,9 +37,30 @@ function Login() {
     setIsRegistered(true);
   };
 
-  const handleLoginSubmit = (event) => {
+  const handleLoginSubmit = async (event) => {
     event.preventDefault();
-    // Aquí puedes enviar la información de inicio de sesión a tu API
+    try { 
+      const response = await fetch('API_URL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        }),
+      });
+    
+      if (!response.ok) {
+        throw new Error('Error al realizar la petición');
+      }
+    
+      const resultData = await response.json();
+      console.log(resultData.Result);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error:', error);
+    }
     console.log('Login:', email, password);
   };
 
