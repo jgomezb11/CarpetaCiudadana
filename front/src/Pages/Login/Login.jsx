@@ -39,29 +39,28 @@ function Login() {
 
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
-    try { 
-      const response = await fetch('API_URL', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        }),
+    const dada = {
+      email,
+      password
+    };
+    fetch('API_URL', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        //Respuesta
+        console.log(data);
+      })
+      .catch(error => {
+        //Error
+        console.error(error);
       });
-    
-      if (!response.ok) {
-        throw new Error('Error al realizar la petición');
-      }
-    
-      const resultData = await response.json();
-      console.log(resultData.Result);
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error:', error);
-    }
-    console.log('Login:', email, password);
+
+    console.log(JSON.stringify(data));
   };
 
   const toggleShowRegister = () => {
