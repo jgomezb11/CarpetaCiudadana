@@ -8,7 +8,7 @@ document_blueprint = Blueprint('documents', __name__, url_prefix='/doc')
 
 @document_blueprint.route('/createDoc', methods=['POST'])
 def create_documento():
-    from app import Documento, Usuario, documento_schema, db
+    from app import Documento, Usuario, Carpeta, documento_schema, db
     file = request.files['file']
     data = request.form
     usuario = Usuario.query.filter_by(email=data.get('email', "")).first()
@@ -22,6 +22,10 @@ def create_documento():
         return jsonify({"msg": "Missing parameters"}), 400
     s3_file_name = f"{usuario.email}/{name}"
     s3_link = s3_handler.upload_file(file, s3_file_name)
+    carpeta = Carpeta.query.get(usuario.id)
+    carpeta.number_of_documents = carpeta.number_of_documents + 1
+    if not is_signed:
+        carpeta.number_non_signed = carpeta.number_non_signed + 1
     documento = Documento(name=name, s3_link=s3_link, is_signed=is_signed, owner=owner, sender=sender, carpeta_id=usuario.carpeta.id)
     db.session.add(documento)
     db.session.commit()
@@ -117,8 +121,9 @@ def delete_documento():
     from app import Documento, db, documento_schema
     documento = Documento.query.get(data.get("name"))
     if documento is None:
-        return jsonify({"msg": "Document not found"}), 404
-    
+        return jsonify({"msg": "Document not found"}), 401
+    if documento.is_signed:
+        return jsonify({"msg": "You can't delete signed documents"}), 401
     s3_handler.delete_file(documento.s3_link)
     db.session.delete(documento)
     db.session.commit()

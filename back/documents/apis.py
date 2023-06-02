@@ -1,5 +1,4 @@
 import requests
-# Funciones para comunicarse con el end-point del gobierno
 
 class API:
     def authenticate_document(self, data):

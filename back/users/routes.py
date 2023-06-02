@@ -1,7 +1,3 @@
-import sys
-import os
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, Usuario, Carpeta, usuario_schema, usuarios_schema
@@ -17,10 +13,8 @@ def login():
         return jsonify({"msg": "Missing JSON in request"}), 400
     email = request.json.get('email', None)
     password = request.json.get('password', None)
-    if not email:
-        return jsonify({"msg": "Missing email parameter"}), 400
-    if not password:
-        return jsonify({"msg": "Missing password parameter"}), 400
+    if not email or not password:
+        return jsonify({"msg": "Missing parameter"}), 400
     user = Usuario.query.filter_by(email=email).first()
     if user is None or not check_password_hash(user.password, password):
         return jsonify({"msg": "Bad email or password"}), 401
