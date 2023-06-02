@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 
 function Header() {
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const [showPeticiones, setShowPeticiones] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [documents, setDocuments] = useState([
     { id: 1, title: 'Documento 1', description: 'Descripción del documento 1' },
@@ -24,7 +25,7 @@ function Header() {
     setShowUploadForm(!showUploadForm);
   };
 
-  const handleCloseClick = () => {
+  const handleCloseUpload = () => {
     setShowUploadForm(false);
   };
 
@@ -58,6 +59,10 @@ function Header() {
     //Ennviar el Mail por el API
     handleModalClose();
   };
+  
+  const handlePeticiones = () => {
+    setShowPeticiones(!showPeticiones);
+  };
 
   return (
     <header className="header">
@@ -74,7 +79,7 @@ function Header() {
                   <form onSubmit={handleUploadSubmit}>
                     <input type="file" accept=".pdf" />
                     <button type="submit">Subir</button>
-                    <button className="close-button" onClick={handleCloseClick}>
+                    <button className="close-button" onClick={handleCloseUpload}>
                       Cerrar
                     </button>
                   </form>
@@ -89,10 +94,23 @@ function Header() {
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="#" className="nav-link" onClick={handlePeticiones}>
               <FaUserFriends className="nav-icon" />
               Peticiones
             </a>
+            {showPeticiones && (
+              <div className="peticiones-container">
+                <div className="peticion-form">
+                  <form onSubmit={handleUploadSubmit}>
+                    <input type="file" accept=".pdf" />
+                    <button type="submit">Subir</button>
+                    <button className="close-button" onClick={handleCloseUpload}>
+                      Cerrar
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
           </li>
         </ul>
       </nav>

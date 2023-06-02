@@ -6,7 +6,7 @@ import { AiFillDelete, AiOutlineDownload } from 'react-icons/ai';
 
 
 
-const DocumentGrid = ({ userId }) => {
+const DocumentGrid = () => {
     const [documents, setDocuments] = useState([]);
     const [selectedDocument, setSelectedDocument] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
