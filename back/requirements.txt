@@ -9,8 +9,9 @@ flask_marshmallow==0.15.0
 requests==2.31.0
 flask_cors==3.0.10
 marshmallow-sqlalchemy==0.29.0
-mysqlclient==2.1.1
 pymysql===1.0.3
 pycryptodomex==3.18.0
 yagmail==0.15.293
 requests-toolbelt==1.0.0
+mysqlclient==2.1.1
+
