@@ -14,26 +14,26 @@ const DocumentGrid = () => {
     const fetchDocuments = async () => {
         const data = {
             email: localStorage.getItem('email')
-          };
-          fetch('http://127.0.0.1:5002/doc/getAll', {
+        };
+        fetch('http://127.0.0.1:5002/doc/getAll', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             body: JSON.stringify(data)
-          })
+        })
             .then(response => {
-              return response.json();
+                return response.json();
             })
             .then(data => {
                 setDocuments(data);
             })
             .catch(error => {
-              console.error(error);
+                console.error(error);
             });
-      
-          console.log(JSON.stringify(data));
+
+        console.log(JSON.stringify(data));
     };
 
     useEffect(() => {
@@ -48,7 +48,7 @@ const DocumentGrid = () => {
     const closeModal = () => {
         setModalOpen(false);
     };
-    
+
     const deleteDocument = (id) => {
         const data = {
             id
@@ -56,20 +56,22 @@ const DocumentGrid = () => {
         fetch('http://127.0.0.1:5002/doc/delete', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              authorization: localStorage.getItem('token')
+                'Content-Type': 'application/json',
+                authorization: localStorage.getItem('token')
             },
             body: JSON.stringify(data)
-          })
+        })
             .then(response => {
-              return response.json();
+                return response.json();
             })
             .then(data => {
                 setDocuments(data);
             })
             .catch(error => {
-              console.error(error);
+                console.error(error);
             });
+
+        fetchDocuments();
     };
 
     return (
@@ -95,11 +97,11 @@ const DocumentGrid = () => {
                 >
                     <div className="modal-content">
                         <h3>{selectedDocument.id}. {selectedDocument.name}</h3>
-                        <p>El archivo se encuentra en la carpeta {selectedDocument.carpeta}</p> 
+                        <p>El archivo se encuentra en la carpeta {selectedDocument.carpeta}</p>
                         <p>Fue subido el {selectedDocument.date_of_upload}</p>
                         <p>El correo de su dueño es {selectedDocument.owner}</p>
                         <p>El encargado de su validacion es {selectedDocument.sender}</p>
-                        {selectedDocument.is_signed ? (<p>El documento ya fue firmado</p>):(<p>El documento no ha sido firmado</p>)}
+                        {selectedDocument.is_signed ? (<p>El documento ya fue firmado</p>) : (<p>El documento no ha sido firmado</p>)}
                         <button className="modal-close-button" onClick={closeModal}>
                             <span className="close-icon">&times;</span>
                         </button>
