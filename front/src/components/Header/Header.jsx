@@ -3,20 +3,16 @@ import { FaUpload, FaUserFriends } from 'react-icons/fa';
 import { RiSendPlaneFill } from 'react-icons/ri';
 import './Header.css';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showPeticiones, setShowPeticiones] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [documents, setDocuments] = useState([
-    { id: 1, title: 'Documento 1', description: 'Descripción del documento 1' },
-    { id: 3, title: 'Documento 2', description: 'Descripción del documento 2' },
-    { id: 4, title: 'Documento 3', description: 'Descripción del documento 3' },
-    { id: 2, title: 'Documento 4', description: 'Descripción del documento 4' },
-    { id: 5, title: 'Documento 5', description: 'Descripción del documento 5' }
-  ]);
+  const [documents, setDocuments] = useState([]);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const fetchDocuments = async () => {
     const data = {
@@ -142,6 +138,11 @@ function Header() {
     setShowPeticiones(!showPeticiones);
   };
 
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
   return (
     <header className="header">
       <nav className="navbar">
@@ -191,6 +192,7 @@ function Header() {
             )}
           </li>
         </ul>
+        <button className='handleLogOut' onClick={handleLogOut}>Cerrar sesion</button>
       </nav>
       <Modal
         isOpen={showModal}

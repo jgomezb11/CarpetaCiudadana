@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [name, setName] = useState('');
@@ -8,6 +9,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showRegister, setShowRegister] = useState(true);
+  const navigate = useNavigate();
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -83,7 +85,7 @@ function Login() {
         } else if (statusCode === 401) {
           alert("Email o contraseña incorrecta");
         } else if (statusCode === 200) {
-          //Redijire al HomePage
+          navigate('/home');
         }
         return response.json();
       })
