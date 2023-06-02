@@ -99,6 +99,11 @@ function Login() {
 
   const toggleShowRegister = () => {
     setShowRegister(!showRegister);
+    setName(null);
+    setDocumentId(null);
+    setAddress(null);
+    setEmail(null);
+    setPassword(null);
   };
 
   return (
