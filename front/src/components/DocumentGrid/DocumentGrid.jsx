@@ -72,7 +72,7 @@ const DocumentGrid = () => {
                 console.error(error);
             });
 
-        forceUpdate();
+        window.location.reload();
     };
 
     return (

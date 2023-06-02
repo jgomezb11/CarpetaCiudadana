@@ -82,7 +82,7 @@ function Header() {
         alert(data.msg);
       } else {
         alert("Archivo subido correctamente");
-        forceUpdate();
+        window.location.reload();
       }
     })
     .catch(error => {
