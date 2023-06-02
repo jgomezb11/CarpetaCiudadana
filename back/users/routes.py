@@ -46,7 +46,7 @@ def create_user():
     new_usuario = Usuario(id=id, name=name, address=address, email=email, phone_number=phone_number, password=generate_password_hash(password))
     new_carpeta = Carpeta(id=id, number_of_documents=0, number_non_signed=0, user_id=id)
     new_usuario.carpeta = new_carpeta
-    #api_gov.registerCitizen(id, name, address, email)
+    api_gov.registerCitizen(id, name, address, email)
     db.session.add(new_usuario)
     db.session.commit()
     if doc_api.initial_doc(email) != 201:

@@ -1,9 +1,5 @@
 from flask import Flask
 from settings import config
-import sys
-import os
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(parent_dir)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from datetime import datetime
@@ -62,19 +58,18 @@ class Solicitud(db.Model):
     destinatario = db.Column(db.String(100), nullable=False)
     usuario_id = db.Column(db.String(50), db.ForeignKey('usuario.id'))
 
-
-class DocumentoSchema(ma.SQLAlchemyAutoSchema):
+class SolicitudSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = Documento
+        model = Solicitud
         load_instance = True
 
-documento_schema = DocumentoSchema()
-documentos_schema = DocumentoSchema(many=True)
+solicitud_schema = SolicitudSchema()
+solicitud_schema = SolicitudSchema(many=True)
 
 def create_app():
     global app
     with app.app_context():
-        from routes import document_blueprint
-        app.register_blueprint(document_blueprint)
+        from routes import user_blueprint
+        app.register_blueprint(user_blueprint)
         db.create_all()
     return app

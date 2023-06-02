@@ -4,6 +4,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
 from utils import s3
+import requests
 
 s3_handler = s3()
 
@@ -28,8 +29,66 @@ def create_documento():
     documento = Documento(name=name, s3_link=s3_link, is_signed=is_signed, owner=owner, sender=sender, carpeta_id=usuario.carpeta.id)
     db.session.add(documento)
     db.session.commit()
-
     return documento_schema.jsonify(documento), 201
+
+
+@document_blueprint.route('/recvDocs', methods=['POST'])
+def recv_docs():
+    from app import Documento, Usuario, db
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+    data = request.get_json()
+    links = data.get('links', [])
+    sender = data.get('sender', '')
+    owner = data.get('owner', '')
+    usuario = Usuario.query.filter_by(email=owner).first()
+    if not usuario:
+        return jsonify({"msg": "User not found"}), 404
+    if not links or not sender or not owner:
+        return jsonify({"msg": "Missing required parameters"}), 400
+    for link in links:
+        response = requests.get(link)
+        file_content = response.content
+        file_name = f"{owner}/{link.split('/')[-1]}"
+        s3_handler.upload_file(file_content, file_name)
+        documento = Documento(
+            name="Documento",
+            s3_link=link,
+            is_signed=True,
+            owner=owner,
+            sender=sender,
+            carpeta_id=usuario.carpeta_id
+        )
+        db.session.add(documento)
+    db.session.commit()
+    return jsonify({"msg": "Documents created successfully"}), 201
+
+
+@document_blueprint.route('/sendDocs', methods=['POST'])
+def send_docs():
+    from app import Documento
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+    data = request.get_json()
+    names = data.get('names', [])
+    sender = data.get('sender', '')
+    owner = data.get('owner', '')
+    url_operador = data.get('url_operador', '')
+    if not names or not sender or not owner or not url_operador:
+        return jsonify({"msg": "Missing required parameters"}), 400
+    s3_links = []
+    for name in names:
+        documento = Documento.query.filter_by(name=name, email=sender).first()
+        if documento:
+            s3_links.append(documento.s3_link)
+    headers = {'Content-Type': 'application/json'}
+    request_data = {
+        "sender": sender,
+        "s3_links": s3_links
+    }
+    requests.post(url_operador, json=request_data, headers=headers)
+    return jsonify(request_data), 200
+
 
 @document_blueprint.route('/getAll', methods=['GET'])
 def get_documentos():

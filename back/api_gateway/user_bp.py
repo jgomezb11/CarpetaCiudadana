@@ -3,13 +3,14 @@ import os
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required, create_access_token
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt
 import requests
 from settings import config
 from datetime import timedelta
 user_blueprint = Blueprint('users', __name__, url_prefix='/user')
+from app import jwt
 
-
+blacklist = set()
 user_api = config["USERS_API"]
 
 @user_blueprint.route('/login', methods=['POST'])
@@ -57,3 +58,15 @@ def delete_usuario():
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(f"{user_api}/user/delUser", json=data, headers=headers)
     return jsonify(response.json()), response.status_code
+
+@user_blueprint.route('/logout', methods=['POST'])
+@jwt_required
+def logout():
+    jti = get_jwt()['jti']
+    blacklist.add(jti)
+    return jsonify({"msg": "Logged out successfully"}), 200
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blocklist(jwt_header, jwt_data):
+    jti = jwt_data['jti']
+    return jti in blacklist
