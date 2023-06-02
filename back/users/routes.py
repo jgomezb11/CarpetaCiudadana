@@ -58,10 +58,10 @@ def get_usuario():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
-    id = data.get('id', None)
+    email = data.get('email', None)
     if id is None:
         return jsonify({"msg": "No ID specified"}), 400
-    usuario = Usuario.query.get(id)
+    usuario = Usuario.query.filter_by(email=email).first()
     if usuario is None:
         return jsonify({"msg": "User not found"}), 404
     return usuario_schema.jsonify(usuario)

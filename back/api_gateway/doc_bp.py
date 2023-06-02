@@ -38,6 +38,14 @@ def create_documento():
     )
     return jsonify(response.json()), response.status_code
 
+@document_blueprint.route('/sendDocs', methods=['POST'])
+@jwt_required()
+def get_documentos():
+    data = request.get_json()
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(f"{documents_api}/doc/sendDocs", json=data, headers=headers)
+    return jsonify(response.json()), response.status_code
+
 @document_blueprint.route('/getAll', methods=['POST'])
 @jwt_required()
 def get_documentos():
@@ -54,10 +62,10 @@ def get_s3_link():
     response = requests.get(f"{documents_api}/doc/getS3Link", json=data, headers=headers)
     return jsonify(response.json()), response.status_code
 
-@document_blueprint.route('/delDocument', methods=['DELETE'])
+@document_blueprint.route('/delDocument', methods=['POST'])
 @jwt_required()
 def delete_documento():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}
-    response = requests.delete(f"{documents_api}/doc/delDocument", json=data, headers=headers)
+    response = requests.post(f"{documents_api}/doc/delDocument", json=data, headers=headers)
     return jsonify(response.json()), response.status_code

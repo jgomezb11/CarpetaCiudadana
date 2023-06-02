@@ -1,6 +1,9 @@
 from flask import Blueprint, jsonify, request
 from utils import s3
 import requests
+from apis import API
+
+apis = API()
 
 s3_handler = s3()
 
@@ -13,7 +16,7 @@ def create_documento():
     data = request.form
     usuario = Usuario.query.filter_by(email=data.get('email', "")).first()
     if usuario is None:
-        return jsonify({"msg": "User not found"}), 404
+        return jsonify({"msg": "User not found"}), 400
     name = file.filename.lower()
     is_signed = bool(data.get('is_signed', False))
     owner = data.get("email", None)
@@ -66,28 +69,18 @@ def recv_docs():
 
 @document_blueprint.route('/sendDocs', methods=['POST'])
 def send_docs():
-    from app import Documento
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
     data = request.get_json()
-    names = data.get('names', [])
+    links = data.get('links', [])
     sender = data.get('sender', '')
     owner = data.get('owner', '')
-    url_operador = data.get('url_operador', '')
-    if not names or not sender or not owner or not url_operador:
+    if not links or not sender or not owner:
         return jsonify({"msg": "Missing required parameters"}), 400
-    s3_links = []
-    for name in names:
-        documento = Documento.query.filter_by(name=name, email=sender).first()
-        if documento:
-            s3_links.append(documento.s3_link)
-    headers = {'Content-Type': 'application/json'}
-    request_data = {
-        "sender": sender,
-        "s3_links": s3_links
-    }
-    requests.post(url_operador, json=request_data, headers=headers)
-    return jsonify(request_data), 200
+    sujeto = f"Notificacion de recibo de archivos"
+    mensaje = f"El usuario {sender} te acaba de mandar este paquete de archivos a traves del Operador123"
+    apis.notificate_user(owner, sujeto, mensaje, links)
+    return jsonify({"msg": "Notified successfully!"}), 201
 
 
 @document_blueprint.route('/getAll', methods=['POST'])
@@ -113,13 +106,13 @@ def get_s3_link():
     from app import Documento
     id = data.get('id', None)
     if not id:
-        return jsonify({"msg": "Missing name in request"}), 400
+        return jsonify({"msg": "Missing id in request"}), 400
     documento = Documento.query.get(id)
     if documento is None:
         return jsonify({"msg": "Document not found"}), 404
     return jsonify({"s3_link": documento.s3_link})
 
-@document_blueprint.route('/delDocument', methods=['DELETE'])
+@document_blueprint.route('/delDocument', methods=['POST'])
 def delete_documento():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -127,12 +120,10 @@ def delete_documento():
     from app import Documento, db, documento_schema
     id = data.get('id', None)
     if not id:
-        return jsonify({"msg": "Missing name in request"}), 400
+        return jsonify({"msg": "Missing id in request"}), 400
     documento = Documento.query.get(id)
     if documento is None:
         return jsonify({"msg": "Document not found"}), 401
-    if documento.is_signed:
-        return jsonify({"msg": "You can't delete signed documents"}), 401
     s3_handler.delete_file(documento.s3_link)
     db.session.delete(documento)
     db.session.commit()
