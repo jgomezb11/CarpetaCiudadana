@@ -1,9 +1,5 @@
 from flask import Flask
 from settings import config
-import sys
-import os
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(parent_dir)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from datetime import datetime
@@ -44,30 +40,27 @@ class Documento(db.Model):
     date_of_upload = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     carpeta_id = db.Column(db.String(50), db.ForeignKey('carpeta.id'), nullable=False)
 
-
 class Solicitud(db.Model):
     __tablename__ = 'solicitud'
     id = db.Column(db.Integer, primary_key=True)
-    nombres = db.Column(db.String(200), nullable=False)
+    nombres = db.Column(db.String(100), nullable=False)
     remitente = db.Column(db.String(100), nullable=False)
     destinatario = db.Column(db.String(100), nullable=False)
     estado = db.Column(db.Enum('PENDIENTE', 'APROBADA', 'RECHAZADA', name='estado_solicitud'), default='PENDIENTE')
     usuario_id = db.Column(db.String(50), db.ForeignKey('usuario.id'))
 
-
-class DocumentoSchema(ma.SQLAlchemyAutoSchema):
+class SolicitudSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = Documento
-        include_relationships = True
+        model = Solicitud
         load_instance = True
 
-documento_schema = DocumentoSchema()
-documentos_schema = DocumentoSchema(many=True)
+solicitud_schema = SolicitudSchema()
+solicitudes_schema = SolicitudSchema(many=True)
 
 def create_app():
     global app
     with app.app_context():
-        from routes import document_blueprint
-        app.register_blueprint(document_blueprint)
+        from routes import solicitud_blueprint
+        app.register_blueprint(solicitud_blueprint)
         db.create_all()
     return app

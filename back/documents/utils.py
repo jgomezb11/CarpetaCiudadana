@@ -1,30 +1,48 @@
-import boto3
 import os
-from dotenv import (load_dotenv)
-from botocore.exceptions import NoCredentialsError
+import boto3
+from dotenv import load_dotenv
 
-def upload_file_to_s3(file, bucket_name, s3_file_name):
-    load_dotenv()
-    s3 = boto3.client('s3', 
-                      aws_access_key_id=os.getenv('AWS_ACCESS_KEY'), 
-                      aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'))
+def get_aws_keys():
+    access = os.getenv('AWS_ACCESS_KEY')
+    secret = os.getenv('AWS_SECRET_ACCESS_KEY')
+    session = os.getenv('AWS_SESSION_TOKEN')
+    return (access, secret, session)
 
-    try:
-        s3.upload_fileobj(file, 
-                          bucket_name, 
-                          s3_file_name,
-                          ExtraArgs={
-                            'ACL': 'public-read',
-                            'ContentType': file.content_type
-                            }
-                          )
+class s3:
+    def __init__(self):
+        load_dotenv()
+        self.credentialsAWS = get_aws_keys()
+        self.s3 = self.get_boto_client()
 
-        print("Upload Successful")
-        return f"https://{bucket_name}.s3.amazonaws.com/{s3_file_name}"
+    def get_boto_client(self):
+        connection = boto3.client(
+            's3',
+            aws_access_key_id=self.credentialsAWS[0],
+            aws_secret_access_key=self.credentialsAWS[1],
+            aws_session_token=self.credentialsAWS[2],
+            region_name="us-east-1"
+        )
+        return connection
 
-    except FileNotFoundError:
-        print("The file was not found")
-        return None
-    except NoCredentialsError:
-        print("Credentials not available")
-        return None
+
+    def upload_file(self, archivo, nombre_archivo):
+        bucket_name = 'carpetaciudadana'
+        self.s3.upload_fileobj(archivo, bucket_name, nombre_archivo)
+        url = f'https://s3.amazonaws.com/{bucket_name}/{nombre_archivo}'
+        return url
+
+
+    def delete_file(self, nombre_archivo):
+        nombre = nombre_archivo.split('carpetaciudadana/')[1]
+        self.s3.delete_object(Bucket='carpetaciudadana', Key=nombre)
+
+
+    def delete_folder(self, name_folder):
+        bucket_name = 'carpetaciudadana'
+        objects = self.s3.list_objects_v2(Bucket=bucket_name,
+                                           Prefix=name_folder)
+        keys = [{'Key': obj['Key']} for obj in objects]
+        if keys:
+            self.s3.delete_objects(Bucket=bucket_name,
+                                    Delete={'Objects': keys})
+        self.s3.delete_object(Bucket=bucket_name, Key=name_folder)
