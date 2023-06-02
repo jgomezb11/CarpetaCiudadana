@@ -38,12 +38,12 @@ def create_documento():
     )
     return jsonify(response.json()), response.status_code
 
-@document_blueprint.route('/getAll', methods=['GET'])
+@document_blueprint.route('/getAll', methods=['POST'])
 @jwt_required()
 def get_documentos():
     data = request.get_json()
     headers = {'Content-Type': 'application/json'}
-    response = requests.get(f"{documents_api}/doc/getAll", json=data, headers=headers)
+    response = requests.post(f"{documents_api}/doc/getAll", json=data, headers=headers)
     return jsonify(response.json()), response.status_code
 
 @document_blueprint.route('/getS3Link', methods=['GET'])

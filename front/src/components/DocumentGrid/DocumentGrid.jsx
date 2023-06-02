@@ -16,10 +16,10 @@ const DocumentGrid = ({ userId }) => {
             email: localStorage.getItem('email')
           };
           fetch('http://127.0.0.1:5002/doc/getAll', {
-            method: 'GET',
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              authorization: localStorage.getItem('token')
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             body: JSON.stringify(data)
           })
@@ -47,10 +47,6 @@ const DocumentGrid = ({ userId }) => {
 
     const closeModal = () => {
         setModalOpen(false);
-    };
-
-    const downloadDocument = (document) => {
-
     };
 
     const deleteDocument = (document) => {
